@@ -4789,5 +4789,82 @@
 		"method": "keyword",
 		"location": "title",
 		"keyword": ["MobileIron User Portal: Sign In"]
-	}]
+	}, {
+		"cms": "若依",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["ruoyi/login.js"]
+		},
+		{
+	    "cms": "jeecms",
+	    "method": "keyword",
+	    "location": "body",
+	    "keyword": ["/r/cms/www"]
+	 },	{
+	    "cms": "thinkphp多语言",
+	    "method": "keyword",
+	    "location": "header",
+	    "keyword": ["think_lang"]
+	 },{
+	    "cms": "Hue 后台编辑器",
+	    "method": "keyword",
+	    "location": "title",
+	    "keyword": ["Hue - 欢迎使用 Hue"]
+	 },{
+	    "cms": "Shiro",
+	    "method": "keyword",
+	    "location": "header",
+	    "keyword": ["shiroCookie"]
+	 },{
+		"cms": "骑士 74CMS",
+		"method": "keyword",
+		"location": "header",
+		"keyword": ["QSCMS"]
+	},{
+		"cms": "ThinkCMF",
+		"method": "keyword",
+		"location": "header",
+		"keyword": ["ThinkCMF"]
+	}, {
+		"cms": "ThinkPHP",
+		"method": "faviconhash",
+		"location": "body",
+		"keyword": ["1165838194"]
+	}, {
+		"cms": "禅道 zentao",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["/js/all.js?v=16.5"]
+	}, {
+		"cms": "畅捷通 T+",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["location='/tplus/'"]
+	}, {
+		"cms": "Nacos",
+		"method": "keyword",
+		"location": "title",
+		"keyword": ["Nacos"]
+	}, {
+		"cms": "spring-boot",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["No message available","status"]
+	}, {
+		"cms": "PHP/8.1.0-dev",
+		"method": "keyword",
+		"location": "header",
+		"keyword": ["PHP/8.1.0-dev"]
+	}, {
+		"cms": "H3C IMC",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["window.location.href='/imc/login.jsf'"]
+	}, {
+		"cms": "nginxWebUI",
+		"method": "keyword",
+		"location": "body",
+		"keyword": ["nginxWebUI"]
+	}
+	]
 }
