@@ -22,9 +22,13 @@ ehole finger -u http://www.baidu.com # 单个url检测
 
 
 
-## 参考链接
-https://github.com/tr0uble-mAker/POC-bomber/
+## 参考优秀项目
+POC-bomber：https://github.com/tr0uble-mAker/POC-bomber
 
-https://peiqi.wgpsec.org/
+peiqi文库：https://peiqi.wgpsec.org
+
+EHole：https://github.com/EdgeSecurityTeam/EHole
+
+
 
 
