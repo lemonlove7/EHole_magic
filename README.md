@@ -1,6 +1,13 @@
 # EHole_magic
+在安全测试时，安全测试人员信息收集中时可使用它进行指纹识别，
 
 对识别出来的重点资产进行进行漏洞检测，不影响原版功能的使用（如：识别出spring-boot则会对spring—boot的漏洞进行检测）
+不影响原版功能的使用
+
+# 运行流程
+
+<img width="676" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/97b5c907-ca20-465e-bd04-4043b16d1f7e">
+
 
 # 使用
 默认不开启，在poc.ini中将poc=no改为poc=yes开启
