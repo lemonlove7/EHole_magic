@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,50 +30,63 @@ var fingerCmd = &cobra.Command{
 	Short: "ehole的指纹识别模块",
 	Long:  `从fofa或者本地文件获取资产进行指纹识别，支持单条url识别。`,
 	Run: func(cmd *cobra.Command, args []string) {
-		color.RGBStyleFromString("105,187,92").Println("\n     ______    __         ______                 \n" +
-			"    / ____/___/ /___ ____/_  __/__  ____ _____ ___ \n" +
-			"   / __/ / __  / __ `/ _ \\/ / / _ \\/ __ `/ __ `__ \\\n" +
-			"  / /___/ /_/ / /_/ /  __/ / /  __/ /_/ / / / / / /\n" +
-			" /_____/\\__,_/\\__, /\\___/_/  \\___/\\__,_/_/ /_/ /_/ \n" +
-			"			 /____/ https://forum.ywhack.com  By:shihuang\n")
+		color.RGBStyleFromString("105,187,92").Println("")
 		if localfile != "" {
 			urls := removeRepeatedElement(source.LocalFile(localfile))
-			s := finger.NewScan(urls, thread, output,proxy)
+			s := finger.NewScan(urls, thread, output, proxy)
 			s.StartScan()
 			os.Exit(1)
 		}
 		if fofaip != "" {
 			urls := removeRepeatedElement(source.Fofaip(fofaip))
-			s := finger.NewScan(urls, thread, output,proxy)
+			s := finger.NewScan(urls, thread, output, proxy)
+			s.StartScan()
+			os.Exit(1)
+		}
+		if hunterip != "" {
+			urls := removeRepeatedElement(source.Hunterip(hunterip))
+			s := finger.NewScan(urls, thread, output, proxy)
 			s.StartScan()
 			os.Exit(1)
 		}
 		if fofasearche != "" {
 			urls := removeRepeatedElement(source.Fafaall(fofasearche))
-			s := finger.NewScan(urls, thread, output,proxy)
+			s := finger.NewScan(urls, thread, output, proxy)
+			s.StartScan()
+			os.Exit(1)
+		}
+		if huntersearche != "" {
+			urls := removeRepeatedElement(source.Hunterall(huntersearche))
+			s := finger.NewScan(urls, thread, output, proxy)
 			s.StartScan()
 			os.Exit(1)
 		}
 		if urla != "" {
-			s := finger.NewScan([]string{urla}, thread, output,proxy)
+			s := finger.NewScan([]string{urla}, thread, output, proxy)
 			s.StartScan()
 			os.Exit(1)
 		}
+
 	},
 }
 
 var (
-	fofaip      string
-	fofasearche string
-	localfile   string
-	urla        string
-	thread      int
-	output      string
-	proxy		string
+	fofaip        string
+	fofasearche   string
+	localfile     string
+	urla          string
+	thread        int
+	output        string
+	proxy         string
+	hunterip      string
+	huntersearche string
 )
 
 func init() {
 	rootCmd.AddCommand(fingerCmd)
+	fingerCmd.Flags().StringVarP(&hunterip, "hip", "a", "", "从hunter提取资产，进行指纹识别，仅仅支持ip或者ip段，例如：192.168.1.1 | 192.168.1.0/24")
+	fingerCmd.Flags().StringVarP(&huntersearche, "hunter", "b", "", "从hunter提取资产，进行指纹识别，支持hunter所有语法")
+
 	fingerCmd.Flags().StringVarP(&fofaip, "fip", "f", "", "从fofa提取资产，进行指纹识别，仅仅支持ip或者ip段，例如：192.168.1.1 | 192.168.1.0/24")
 	fingerCmd.Flags().StringVarP(&fofasearche, "fofa", "s", "", "从fofa提取资产，进行指纹识别，支持fofa所有语法")
 	fingerCmd.Flags().StringVarP(&localfile, "local", "l", "", "从本地文件读取资产，进行指纹识别，支持无协议，列如：192.168.1.1:9090 | http://192.168.1.1:9090")
