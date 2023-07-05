@@ -41,6 +41,7 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 2、增加从hunter提取资产，进行指纹识别
 
+<img width="892" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/f2c733d8-6bf6-4d56-b31b-61015421fd7c">
 <img width="807" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/dfb7b200-4938-41b1-88c3-9756c6970ebc">
 
 
