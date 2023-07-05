@@ -18,6 +18,13 @@
 ```
 ehole finger -s domain="baidu.com"  // 支持所有fofa语法
 ```
+### hunter识别
+注意：从hunter识别需要配置hunter 密钥，在config.ini内配置好密钥即可使用。
+
+```
+ehole finger -b ip="180.140.20.182"  // 支持所有hunter语法
+```
+
 ### 本地识别
 
 ```
