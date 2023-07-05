@@ -36,11 +36,10 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 ### 2023年7月5日
 
-修复mac版报错segmentation fault
+1、修复mac版报错segmentation fault
 
-<img width="476" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/90cc0c44-5c17-4ee5-94d5-6ef476dcb397">
 
-增加从hunter提取资产，进行指纹识别
+2、增加从hunter提取资产，进行指纹识别
 
 <img width="807" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/dfb7b200-4938-41b1-88c3-9756c6970ebc">
 
