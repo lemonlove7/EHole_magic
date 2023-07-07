@@ -4,7 +4,7 @@
 
 
 # 运行流程
-对资产进行指纹识别-->重点资产进行漏洞检测-->如：http://www.xxx.com存在通达OA--> 对通达OA漏洞进行扫描
+对资产进行指纹识别-->重点资产进行漏洞检测-->如：http://www.xxx.com存在通达OA--> 对通达OA漏洞进行扫描->对ftp服务进行暴力破解
 <img width="679" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/86acca48-90af-4a47-b197-7e4ef5df8a4b">
 
 
