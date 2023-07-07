@@ -10,7 +10,8 @@
 
 # 使用
 默认不开启，在poc.ini中将poc=no改为poc=yes开启
-ftp爆破默认不开启，在在poc.ini中将brute=no改为brute=yes开启
+
+ftp爆破默认不开启，在poc.ini中将brute=no改为brute=yes开启
 
 
 ### fofa识别
