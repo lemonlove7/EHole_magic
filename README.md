@@ -10,6 +10,7 @@
 
 # 使用
 默认不开启，在poc.ini中将poc=no改为poc=yes开启
+ftp爆破默认不开启，在在poc.ini中将brute=no改为brute=yes开启
 
 
 ### fofa识别
@@ -50,6 +51,15 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 <img width="892" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/f2c733d8-6bf6-4d56-b31b-61015421fd7c">
 <img width="807" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/dfb7b200-4938-41b1-88c3-9756c6970ebc">
+
+### 2023年7月7日
+1、增加常用poc数量
+
+2、对ftp服务进行检测，将poc.ini中的brute设置为yes可进行密码爆破
+
+<img width="536" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/d28ca59b-3eab-4ef8-a19a-d8726ed274f2">
+<img width="672" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/2fe41884-dd51-48ce-8651-b20e3a4a8139">
+
 
 
 ## 参考优秀项目
