@@ -948,10 +948,6 @@ func (s *FinScan)StartScan() {
 					fmt.Println(hj_eHR_res)
 				}
 			}
-
-
-
-
         }
 
 		if brute=="yes"{
@@ -962,9 +958,6 @@ func (s *FinScan)StartScan() {
 
 
     }
-
-
-
 
 	if s.Output != "" {
 		outfile(s.Output, s.AllResult)
@@ -1309,6 +1302,7 @@ func (s *FinScan)fingerScan() {
 		switch dataface.(type){
 		case []string:
 			url := dataface.([]string)
+			//fmt.Println(url[0])
 			//ftp识别
 			host := getHostFromURL(url[0])
 			//fmt.Println("去除//之后的值:", host)
@@ -1318,14 +1312,19 @@ func (s *FinScan)fingerScan() {
 				s.FocusResult = append(s.FocusResult, out) // 将FTP服务添加到重点资产中
 			}
 
-
-
 			var data *resps
 			data, err := httprequest(url, s.Proxy)
-			//添加nacos识别
-			if err != nil{
-				continue
+			
+			if err != nil {
+				//fmt.Println(url[0])
+				url[0] = strings.ReplaceAll(url[0], "https://", "http://")
+				data, err = httprequest(url, s.Proxy)
+				
+				if err != nil {
+					continue
+				}
 			}
+			//添加nacos识别
 			if data.statuscode == 404 && strings.Contains(url[0],"8848"){
 				// 在URL后面添加"/nacos"
 				urlWithNacos := url[0] + "/nacos"
@@ -1338,13 +1337,8 @@ func (s *FinScan)fingerScan() {
 				}
 			}
 
-			if err != nil {
-				url[0] = strings.ReplaceAll(url[0], "https://", "http://")
-				data, err = httprequest(url, s.Proxy)
-				if err != nil {
-					continue
-				}
-			}
+
+
 			for _, jurl := range data.jsurl {
 				if jurl != "" {
 					s.UrlQueue.Push([]string{jurl, "1"})
