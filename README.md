@@ -62,7 +62,14 @@ ehole finger -u http://www.baidu.com // 单个url检测
 <img width="536" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/d28ca59b-3eab-4ef8-a19a-d8726ed274f2">
 <img width="672" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/2fe41884-dd51-48ce-8651-b20e3a4a8139">
 
+### 2023年7月13日
 
+1、更新指纹数量，1w+
+
+2、增加宏景eHR人力资源信息管理系统sql注入检测
+
+<img width="1408" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/98c7590d-0dce-4b10-a329-5db313c5e484">
+<img width="931" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/09adbd5c-cd2b-478d-8a66-131c7905174b">
 
 ## 参考优秀项目
 POC-bomber：https://github.com/tr0uble-mAker/POC-bomber
