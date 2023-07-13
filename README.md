@@ -66,10 +66,12 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 1、更新指纹数量，1w+
 
-2、增加宏景eHR人力资源信息管理系统sql注入检测
+2、修复fofa -f或者-s 后没有具体资产显示
+
+3、增加宏景eHR人力资源信息管理系统sql注入检测
 
 <img width="1408" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/98c7590d-0dce-4b10-a329-5db313c5e484">
-<img width="931" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/09adbd5c-cd2b-478d-8a66-131c7905174b">
+<img width="1132" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/78af3d01-7c23-4058-9071-402e07dbea6a">
 
 ## 参考优秀项目
 POC-bomber：https://github.com/tr0uble-mAker/POC-bomber
