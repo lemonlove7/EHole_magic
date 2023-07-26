@@ -25171,7 +25171,7 @@
         "location": "body",
         "keyword": ["sheight*window.screen.deviceydpi"]
     }, {
-        "cms": "Yonyou-NC",
+        "cms": "YONYOU NC",
         "method": "keyword",
         "location": "body",
         "keyword": ["url=nccloud"]
@@ -53522,6 +53522,11 @@
             "method": "faviconhash",
             "location": "body",
             "keyword": ["947874108"]
+        }, {
+            "cms": "大华智慧园区综合管理平台",
+            "method": "keyword",
+            "location": "body",
+            "keyword": ["URL='/WPMS'"]
         }
     ]
 }
