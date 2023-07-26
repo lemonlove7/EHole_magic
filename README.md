@@ -73,6 +73,11 @@ ehole finger -u http://www.baidu.com // 单个url检测
 <img width="1408" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/98c7590d-0dce-4b10-a329-5db313c5e484">
 <img width="1132" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/78af3d01-7c23-4058-9071-402e07dbea6a">
 
+### 2023年7月26日
+
+1、更新最近出的day(用友、金蝶云、大华)
+2、优化指纹识别
+
 ## 参考优秀项目
 POC-bomber：https://github.com/tr0uble-mAker/POC-bomber
 
