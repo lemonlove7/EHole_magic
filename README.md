@@ -17,7 +17,7 @@ ftp爆破默认不开启，在poc.ini中将brute=no改为brute=yes开启
 
 ### fofa识别
 注意：从FOFA识别需要配置FOFA 密钥以及邮箱，在config.ini内配置好密钥以及邮箱即可使用。
-
+fofa搜索无结果，将domain="baidu.com"改为domain='"baidu.com"'
 ```
 ehole finger -s domain="baidu.com"  // 支持所有fofa语法
 ```
