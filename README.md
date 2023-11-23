@@ -89,6 +89,8 @@ peiqi文库：https://peiqi.wgpsec.org
 
 EHole：https://github.com/EdgeSecurityTeam/EHole
 
+EHole-modify：https://github.com/A10nggg/EHole-modify/
+
 
 
 
