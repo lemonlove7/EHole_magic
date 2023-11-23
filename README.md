@@ -82,6 +82,22 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 2、优化指纹识别
 
+### 2023年11月24日
+
+添加路径指纹识别（有些网站需要添加特定路径才能显示页面）感谢遥遥师傅给的建议
+
+在poc.ini中设置参数route=yes开启，路径在dict目录下的path.txt中
+
+<img width="891" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/31db58ff-0bb2-4e68-b6ab-a9c824db13b5">
+
+<img width="830" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/9dfd2db0-de44-4769-b4c1-11355055310c">
+
+<img width="1127" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/35abd894-a6f6-44c8-bae6-f983ab0daae7">
+
+
+
+
+
 ## 参考优秀项目
 POC-bomber：https://github.com/tr0uble-mAker/POC-bomber
 
