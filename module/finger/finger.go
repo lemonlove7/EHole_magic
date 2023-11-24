@@ -1644,6 +1644,9 @@ func (s *FinScan)fingerScan() {
 			for _,url_path := range url_paths{
 				urlWithroute := url[0] + url_path
 				data, err = httprequest([]string{urlWithroute, "1"}, s.Proxy)
+				if err != nil {
+					continue
+				}
 
 			for _, jurl := range data.jsurl {
 				if jurl != "" {
