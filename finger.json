@@ -53527,6 +53527,21 @@
             "method": "keyword",
             "location": "body",
             "keyword": ["URL='/WPMS'"]
+        }, {
+            "cms": "帆软数据决策系统",
+            "method": "keyword",
+            "location": "body",
+            "keyword": ["/webroot/decision/file?path="]
+        }, {
+            "cms": "登陆页面",
+            "method": "keyword",
+            "location": "body",
+            "keyword": ["type=\"password\""]
+        }, {
+            "cms": "登陆页面",
+            "method": "keyword",
+            "location": "body",
+            "keyword": ["登录"]
         }
     ]
 }
