@@ -108,6 +108,8 @@ EHole：https://github.com/EdgeSecurityTeam/EHole
 
 EHole-modify：https://github.com/A10nggg/EHole-modify/
 
+### Star历史
 
+![Star History Chart](https://api.star-history.com/svg?repos=lemonlove7/EHole_magic&type=Date)
 
 
