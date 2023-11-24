@@ -84,7 +84,7 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 ### 2023年11月24日
 
-添加路径指纹识别（有些网站需要添加特定路径才能显示页面）感谢遥遥师傅给的建议
+添加路径指纹识别（有些网站需要添加特定路径才能显示页面）感谢[G0mini](https://github.com/G0mini)师傅给的建议
 
 在poc.ini中设置参数route=yes开启
 路径字典 在dict目录下的path.txt中
