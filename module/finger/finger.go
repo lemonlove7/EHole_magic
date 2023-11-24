@@ -11,9 +11,9 @@ import (
 	"sync"
 
 	"gopkg.in/ini.v1"
-    	"net/http"
-    	"io/ioutil"
-   	"time"
+	"net/http"
+	"io/ioutil"
+	"time"
 	"crypto/tls"
 	"regexp"
 	"bytes"
@@ -78,22 +78,22 @@ func (s *FinScan)StartScan() {
 			s.fingerScan()
 		}()
 	}
-
     cfg, err := ini.Load("poc.ini")
     if err != nil {
         fmt.Println("无法加载配置文件:", err)
     }
-    // 获取poc值
     poc := cfg.Section("").Key("poc").String()
-	brute:=cfg.Section("").Key("brute").String()
+    brute:=cfg.Section("").Key("brute").String()
 
-
+	// 创建一个自定义的 http.Transport，并禁用证书验证
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+
+    // 创建具有超时设置的HTTP客户端
 	
     client := &http.Client{
-    Timeout: time.Second * 10,
+    Timeout: time.Second * 10, // 设置超时时间为10秒
 	Transport: transport,
     }
 
@@ -105,8 +105,10 @@ func (s *FinScan)StartScan() {
 		color.RGBStyleFromString("237,64,35").Printf(fmt.Sprintf("%s", aas.Cms))
 		fmt.Printf(fmt.Sprintf(" | %s | %d | %d | %s ]\n", aas.Server, aas.Statuscode, aas.Length, aas.Title))
 
-
+	    //poc
+	    //fmt.Println("poc的值:", poc)
         if poc =="yes"{
+			//fmt.Println(aas.Cms) thinkphp
             if strings.Contains(aas.Cms, "ThinkPHP"){
                 currentTime := time.Now()
 	            formattedTime := currentTime.Format("06_01_02")
@@ -1029,7 +1031,7 @@ func h3c_rce(url string) string{
 			return ""
 		}
 		bodys=string(body)
-		if resp1.StatusCode == http.StatusOK { // 判断返回值是否为200
+		if resp1.StatusCode == http.StatusOK {
 			//fmt.Println("存在漏洞")
 			return "[+] 存在H3C多系列路由器前台RCE漏洞,漏洞URL："+vurl
 		}
@@ -1078,7 +1080,7 @@ func yync_qt(url string) string{
 			return ""
 		}
 		bodys=string(respBody)
-		if resp.StatusCode == http.StatusOK || len(bodys)==0 { // 判断返回值是否为200
+		if resp.StatusCode == http.StatusOK || len(bodys)==0 {
 			//fmt.Println("存在漏洞")
 			return "[+] 存在用友NC Cloud存在前台远程命令执行漏洞,漏洞URL："+vurl
 		}
@@ -1231,13 +1233,6 @@ func hj_eHR(url string) string{
 //宏景eHR文件上传
 func hj_eHR_rce(url string) string{
 	bodys:=""
-	// // 读取文件内容
-	// content, err := ioutil.ReadFile("1.txt")
-	// if err != nil {
-	// 	return ""
-	// }
-	// // 打印文件内容
-	// payload:=string(content)
 
 	// 创建一个自定义的 http.Transport，并禁用证书验证
 	transport := &http.Transport{
@@ -1413,7 +1408,9 @@ func Nacos_unauthorized(url string) string{
 			continue
 		}
 		bodyStr = string(bodyBytes)
+		//return bodyStr
 		if strings.Contains(bodyStr,"password"){
+			//fmt.Println(bodys)
 			return "[+] 存在Nacos未授权访问漏洞 漏洞url："+vurl
 		}else{
 			bodyStr=""
@@ -1431,8 +1428,9 @@ func Nacos_jwt(url string) string{
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+	// 创建具有超时设置的HTTP客户端
 	client := &http.Client{
-	Timeout: time.Second * 10,
+	Timeout: time.Second * 10, // 设置超时时间为10秒
 	Transport: transport,
 	}
 	payloads:= []string{
@@ -1456,6 +1454,7 @@ func Nacos_jwt(url string) string{
 			headers.Set("Content-Type", "application/x-www-form-urlencoded")
 			headers.Set("Authorization","Bearer "+payload)
 			vurl:=url+path
+			//fmt.Println(path+":"+payload)
 			req, err := http.NewRequest("POST", vurl, strings.NewReader(data))
 			if err != nil {
 				continue
@@ -1473,6 +1472,7 @@ func Nacos_jwt(url string) string{
 			}
 			bodys=string(body)
 			if strings.Contains(bodys,"Bearer")|| strings.Contains(bodys,"accessToken"){
+				//fmt.Println(bodys)
 				return "[+] 存在Nacos jwt secret key 硬编码绕过 漏洞url："+vurl+"\n[+] data:"+payload
 			}else{
 				bodys=""
@@ -1488,9 +1488,11 @@ func Nacos_jwt(url string) string{
 //开启授权后identity硬编码绕过
 func Nacos_identity(url string) string{
 	bodys:=""
+	// 创建一个自定义的 http.Transport，并禁用证书验证
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+	// 创建具有超时设置的HTTP客户端
 	client := &http.Client{
 	Timeout: time.Second * 10, // 设置超时时间为10秒
 	Transport: transport,
@@ -1547,6 +1549,7 @@ func Nacos_identity(url string) string{
 			}
 			bodys := string(body)
 			if strings.Contains(bodys, "create user ok") {
+				//fmt.Println("[+] 存在Nacos开启授权后identity硬编码绕过漏洞 账号密码：" + nacos+":"+passds)
 				return "[+] 存在Nacos开启授权后identity硬编码绕过漏洞 账号密码：" + nacos+":"+passds+":"+key+value
 			}
 
@@ -1600,9 +1603,7 @@ func (s *FinScan)fingerScan() {
 					continue
 				}
 			}
-
 			if data.statuscode == 404 && strings.Contains(url[0],"8848"){
-
 				urlWithNacos := url[0] + "/nacos"
 				fmt.Println(urlWithNacos)
 
@@ -1611,10 +1612,10 @@ func (s *FinScan)fingerScan() {
 					continue
 				}
 			}
-
 			cfg, err := ini.Load("poc.ini")
 			if err != nil {
 				fmt.Println("无法加载配置文件:", err)
+				//return
 			}
 			route:=cfg.Section("").Key("route").String()
 			url_paths:=[]string{
@@ -1623,6 +1624,7 @@ func (s *FinScan)fingerScan() {
 			if route=="yes"{
 				filePath := "./dict/path.txt"
 
+				// 打开文件
 				file, err := os.Open(filePath)
 				if err != nil {
 					fmt.Println("打开文件时出错:", err)
@@ -1641,6 +1643,7 @@ func (s *FinScan)fingerScan() {
 				}
 			
 			}
+			slice := []string{}
 			for _,url_path := range url_paths{
 				urlWithroute := url[0] + url_path
 				data, err = httprequest([]string{urlWithroute, "1"}, s.Proxy)
@@ -1649,6 +1652,7 @@ func (s *FinScan)fingerScan() {
 				}
 
 			for _, jurl := range data.jsurl {
+
 				if jurl != "" {
 					s.UrlQueue.Push([]string{jurl, "1"})
 				}
@@ -1705,13 +1709,27 @@ func (s *FinScan)fingerScan() {
 			s.AllResult = append(s.AllResult,out)
 			if len(out.Cms) != 0 {
 				outstr := fmt.Sprintf("[ %s | %s | %s | %d | %d | %s ]", out.Url, out.Cms, out.Server, out.Statuscode, out.Length, out.Title)
-				color.RGBStyleFromString("237,64,35").Println(outstr)
-				s.FocusResult = append(s.FocusResult,out)
+
+				hasBanana := false
+				for _, element := range slice {
+					if element == out.Cms {
+						hasBanana = true
+						break
+					}
+				}
+			
+				if !hasBanana {
+					color.RGBStyleFromString("237,64,35").Println(outstr)
+					s.FocusResult = append(s.FocusResult,out)
+				}
+				slice=append(slice,out.Cms)
+
 			} else {
 				outstr := fmt.Sprintf("[ %s | %s | %s | %d | %d | %s ]", out.Url, out.Cms, out.Server, out.Statuscode, out.Length, out.Title)
 				fmt.Println(outstr)
 			}
 			}
+		slice = slice[:0]
 		default:
 			continue
 		}
@@ -1738,6 +1756,7 @@ func checkFTPPort(host string) bool {
 	}
 	defer conn.Close()
 
+	// 设置超时时间为5秒
 	conn.SetDeadline(time.Now().Add(5000 * time.Millisecond))
 
 	fmt.Fprintf(conn, "HEAD / HTTP/1.0\r\n\r\n")
@@ -1760,6 +1779,7 @@ func checkFTPPort(host string) bool {
 	return false
 }
 
+//ftp爆破
 
 func ftp_bp(Hostport string) {
 	resultChan := make(chan string)
