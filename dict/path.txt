@@ -1,2 +1,5 @@
 /admin
 /webroot/decision/login
+/default
+/admin.do
+/druid/index.html
