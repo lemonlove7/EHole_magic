@@ -95,6 +95,12 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 <img width="1127" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/35abd894-a6f6-44c8-bae6-f983ab0daae7">
 
+### 2023年12月1日
+
+添加指纹至2w+
+
+<img width="1060" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/98ca03f0-c8e5-4da9-b916-bf5f3afbacf9">
+
 
 
 
