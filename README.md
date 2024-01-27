@@ -101,6 +101,12 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 <img width="1060" alt="image" src="https://github.com/lemonlove7/EHole_magic/assets/56328995/98ca03f0-c8e5-4da9-b916-bf5f3afbacf9">
 
+### 2024年1月27日
+
+
+修复：对一些使用 JavaScript 跳转到新 URL 的站点存在问题
+感谢[mewhz](https://github.com/mewhz)师傅给出的修复方案：[补全JS匹配正则，并修复JS匹配URL路径丢失的问题](https://github.com/lemonlove7/EHole_magic/pull/20)
+
 
 
 
