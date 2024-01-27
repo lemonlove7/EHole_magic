@@ -105,6 +105,7 @@ ehole finger -u http://www.baidu.com // 单个url检测
 
 
 修复：对一些使用 JavaScript 跳转到新 URL 的站点存在问题
+
 感谢[mewhz](https://github.com/mewhz)师傅给出的修复方案：[补全JS匹配正则，并修复JS匹配URL路径丢失的问题](https://github.com/lemonlove7/EHole_magic/pull/20)
 
 
