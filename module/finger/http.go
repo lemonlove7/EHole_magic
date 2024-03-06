@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	//"fmt"
 )
 
 type resps struct {
@@ -46,8 +47,10 @@ func rndua() string {
 func gettitle(httpbody string) string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(httpbody))
 	if err != nil {
+		//fmt.Println(doc)
 		return "Not found"
 	}
+	// fmt.Println(doc)
 	title := doc.Find("title").Text()
 	title = strings.Replace(title, "\n", "", -1)
 	title = strings.Trim(title, " ")
@@ -111,7 +114,13 @@ func httprequest(url1 []string, proxy string) (*resps, error) {
 	req.Header.Set("User-Agent", rndua())
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		//cookie 有些网站带了cookie无法访问
+		req.Header.Del("Cookie")
+		resp, err = client.Do(req)
+		if err !=nil{
+			return nil, err
+		}
+		//return nil, err
 	}
 	defer resp.Body.Close()
 	result, _ := ioutil.ReadAll(resp.Body)
