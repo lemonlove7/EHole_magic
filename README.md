@@ -109,6 +109,9 @@ ehole finger -u http://www.baidu.com // 单个url检测
 感谢[mewhz](https://github.com/mewhz)师傅给出的修复方案：[补全JS匹配正则，并修复JS匹配URL路径丢失的问题](https://github.com/lemonlove7/EHole_magic/pull/20)
 
 
+### 2024年3月6日
+
+修复：有些网站能正常访问 使用改工具无法访问的问题
 
 
 
